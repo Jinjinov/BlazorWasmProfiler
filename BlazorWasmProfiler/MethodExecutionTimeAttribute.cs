@@ -19,12 +19,13 @@ public class MethodExecutionTimeAttribute : Attribute
         string callerMethodName = GetCallerMethodName();
         string key = $"{callerMethodName}-{methodName}";
 
-        if (!_methodStatistics.ContainsKey(key))
+        if (!_methodStatistics.TryGetValue(key, out var statistics))
         {
-            _methodStatistics[key] = new ExecutionStatistics() { MethodName = methodName, CallerMethodName = callerMethodName };
+            statistics = new ExecutionStatistics() { MethodName = methodName, CallerMethodName = callerMethodName };
+            _methodStatistics[key] = statistics;
         }
 
-        _methodStatistics[key].StartTiming();
+        statistics.StartTiming();
     }
 
     [Advice(Kind.After)]
@@ -33,9 +34,9 @@ public class MethodExecutionTimeAttribute : Attribute
         string callerMethodName = GetCallerMethodName();
         string key = $"{callerMethodName}-{methodName}";
 
-        if (_methodStatistics.ContainsKey(key))
+        if (_methodStatistics.TryGetValue(key, out var statistics))
         {
-            _methodStatistics[key].StopTiming();
+            statistics.StopTiming();
         }
     }
 
