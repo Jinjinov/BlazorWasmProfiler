@@ -1,0 +1,2 @@
+# BlazorWasmProfiler
+BlazorWasmProfiler
