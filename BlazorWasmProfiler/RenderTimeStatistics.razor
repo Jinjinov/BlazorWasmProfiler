@@ -44,19 +44,19 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Method</th>
                 <th>Caller</th>
-                <th>Render Count</th>
-                <th>Total Render Time (ms)</th>
-                <th>Average Render Time (ms)</th>
+                <th>Component</th>
+                <th>Count</th>
+                <th>Total Time (ms)</th>
+                <th>Average Time (ms)</th>
             </tr>
         </thead>
         <tbody>
             @foreach (ExecutionStatistics executionStatistics in renderStatistics.Values)
             {
                 <tr>
-                    <td>@executionStatistics.MethodName</td>
                     <td>@executionStatistics.CallerMethodName</td>
+                    <td>@executionStatistics.MethodName</td>
                     <td>@executionStatistics.Count</td>
                     <td>@executionStatistics.TotalTime.TotalMilliseconds</td>
                     <td>@executionStatistics.GetAverageTime().TotalMilliseconds</td>

@@ -70,7 +70,7 @@
 
     protected override void OnInitialized()
     {
-        EventType.Add(" 1 OnInit");
+        EventType.Add("1 OnInit");
     }
     protected override async Task OnInitializedAsync()
     {
@@ -78,23 +78,23 @@
     }
     protected override void OnParametersSet()
     {
-        EventType.Add("3 On Parameter set ");
+        EventType.Add("3 On Parameter set");
     }
     protected override async Task OnParametersSetAsync()
     {
-        EventType.Add(" 4 OnParametersSet Async Started");
+        EventType.Add("4 OnParametersSet Async Started");
     }
     protected override bool ShouldRender()
     {
-        EventType.Add(" 5 Should render called");
+        EventType.Add("5 Should render called");
         return true;
     }
     protected override void OnAfterRender(bool firstRender)
     {
-        EventType.Add(" 6 OnAfterRenderStarted");
+        EventType.Add("6 OnAfterRenderStarted");
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        EventType.Add(" 7 OnAfterRender Async Started");
+        EventType.Add("7 OnAfterRender Async Started");
     }
 }

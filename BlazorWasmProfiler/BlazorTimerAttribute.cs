@@ -20,12 +20,16 @@ public class BlazorTimerAttribute : Attribute
     public void OnEntry([Argument(Source.Name)] string methodName, [Argument(Source.Type)] Type declaringType)
     {
         string declaringTypeName = declaringType.FullName ?? string.Empty;
-        string callerMethodName = GetCallerMethodName();
-        string methodKey = $"{callerMethodName}-{declaringTypeName}.{methodName}";
+        string methodFullName = $"{declaringTypeName}.{methodName}";
+
+        (string callerClassName, string callerMethodName) = GetCallerMethodName();
+        string callerFullName = $"{callerClassName}.{callerMethodName}";
+
+        string methodKey = $"{callerFullName}-{methodFullName}";
 
         if (!_methodStatistics.TryGetValue(methodKey, out var methodStatistics))
         {
-            methodStatistics = new ExecutionStatistics() { MethodName = $"{declaringTypeName}.{methodName}", CallerMethodName = callerMethodName };
+            methodStatistics = new ExecutionStatistics() { MethodName = methodFullName, CallerMethodName = callerFullName };
             _methodStatistics[methodKey] = methodStatistics;
         }
 
@@ -37,7 +41,7 @@ public class BlazorTimerAttribute : Attribute
 
             if (!_renderStatistics.TryGetValue(renderKey, out var renderStatistics))
             {
-                renderStatistics = new ExecutionStatistics() { MethodName = $"{declaringTypeName}.{methodName}", CallerMethodName = callerMethodName };
+                renderStatistics = new ExecutionStatistics() { MethodName = declaringTypeName, CallerMethodName = callerClassName };
                 _renderStatistics[renderKey] = renderStatistics;
             }
 
@@ -49,8 +53,12 @@ public class BlazorTimerAttribute : Attribute
     public void OnExit([Argument(Source.Name)] string methodName, [Argument(Source.Type)] Type declaringType)
     {
         string declaringTypeName = declaringType.FullName ?? string.Empty;
-        string callerMethodName = GetCallerMethodName();
-        string methodKey = $"{callerMethodName}-{declaringTypeName}.{methodName}";
+        string methodFullName = $"{declaringTypeName}.{methodName}";
+
+        (string callerClassName, string callerMethodName) = GetCallerMethodName();
+        string callerFullName = $"{callerClassName}.{callerMethodName}";
+
+        string methodKey = $"{callerFullName}-{methodFullName}";
 
         if (_methodStatistics.TryGetValue(methodKey, out var methodStatistics))
         {
@@ -68,7 +76,7 @@ public class BlazorTimerAttribute : Attribute
         }
     }
 
-    private string GetCallerMethodName()
+    private (string callerClassName, string callerMethodName) GetCallerMethodName()
     {
         StackTrace stackTrace = new();
 
@@ -77,9 +85,9 @@ public class BlazorTimerAttribute : Attribute
             string callerMethodName = method.Name;
             string callerClassName = method.DeclaringType?.FullName ?? string.Empty;
 
-            return $"{callerClassName}.{callerMethodName}";
+            return (callerClassName, callerMethodName);
         }
 
-        return string.Empty;
+        return (string.Empty, string.Empty);
     }
 }
