@@ -2,6 +2,20 @@
 
 Poor Man's Blazor Wasm Profiler
 
+It uses `AspectInjector` to time the execution of every method in your Blazor WASM project.
+
+It also measures the render time of every Blazor Component that defines these two methods:
+
+        protected override void OnParametersSet()
+        {
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+        }
+
+It does not work with `OnParametersSetAsync()` or `OnAfterRenderAsync(bool firstRender)`
+
 ## How to use:
 
 1. Include NuGet package from https://www.nuget.org/packages/BlazorWasmProfiler
