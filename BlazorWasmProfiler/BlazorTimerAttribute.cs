@@ -8,6 +8,7 @@ namespace BlazorWasmProfiler;
 
 [Aspect(Scope.Global)]
 [Injection(typeof(BlazorTimerAttribute))]
+[AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 public class BlazorTimerAttribute : Attribute
 {
     private static readonly Dictionary<string, ExecutionStatistics> _methodStatistics = new();
@@ -76,7 +77,9 @@ public class BlazorTimerAttribute : Attribute
         }
     }
 
+#pragma warning disable CA1822 // Mark members as static
     private (string callerClassName, string callerMethodName) GetCallerMethodName()
+#pragma warning restore CA1822 // Mark members as static
     {
         StackTrace stackTrace = new();
 
