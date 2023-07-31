@@ -3,7 +3,7 @@ using BlazorWasmProfiler.Test;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-[assembly: MethodExecutionTime]
+[assembly: BlazorTimer]
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

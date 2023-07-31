@@ -1,4 +1,4 @@
-﻿@page "/methodcallstatistics"
+﻿@page "/rendertimestatistics"
 @using BlazorWasmProfiler;
 
 <style>
@@ -37,26 +37,26 @@
         }
 </style>
 
-<h3>Method Call Statistics</h3>
+<h3>Render Time Statistics</h3>
 
-@if (methodStatistics != null && methodStatistics.Count > 0)
+@if (renderStatistics != null && renderStatistics.Count > 0)
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Caller</th>
                 <th>Method</th>
-                <th>Call Count</th>
-                <th>Total Execution Time (ms)</th>
-                <th>Average Execution Time (ms)</th>
+                <th>Caller</th>
+                <th>Render Count</th>
+                <th>Total Render Time (ms)</th>
+                <th>Average Render Time (ms)</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (ExecutionStatistics executionStatistics in methodStatistics.Values)
+            @foreach (ExecutionStatistics executionStatistics in renderStatistics.Values)
             {
                 <tr>
-                    <td>@executionStatistics.CallerMethodName</td>
                     <td>@executionStatistics.MethodName</td>
+                    <td>@executionStatistics.CallerMethodName</td>
                     <td>@executionStatistics.Count</td>
                     <td>@executionStatistics.TotalTime.TotalMilliseconds</td>
                     <td>@executionStatistics.GetAverageTime().TotalMilliseconds</td>
@@ -67,14 +67,14 @@
 }
 else
 {
-    <p>No method call statistics available.</p>
+    <p>No render time statistics available.</p>
 }
 
 @code {
-    private IReadOnlyDictionary<string, ExecutionStatistics>? methodStatistics;
+    private IReadOnlyDictionary<string, ExecutionStatistics>? renderStatistics;
 
     protected override void OnInitialized()
     {
-        methodStatistics = BlazorTimerAttribute.GetMethodStatistics();
+        renderStatistics = BlazorTimerAttribute.GetRenderStatistics();
     }
 }

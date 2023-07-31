@@ -9,8 +9,102 @@
         </NavLink>
     </li>
     <li class="nav-item px-3">
-        <NavLink class="nav-link" href="RenderTimeTracker">
-            <span class="oi oi-list-rich" aria-hidden="true"></span> Render Time Tracker
+        <NavLink class="nav-link" href="RenderTimeStatistics">
+            <span class="oi oi-list-rich" aria-hidden="true"></span> Render Time Statistics
         </NavLink>
     </li>
 </ul>
+
+@foreach (var item in Enumerable.Range(1, 100))
+{
+    @item
+    <hr />
+    <form>
+        <!-- Text Input -->
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" required>
+        <br>
+
+        <!-- Radio Buttons -->
+        <label>Gender:</label>
+        <input type="radio" id="male" name="gender" value="male">
+        <label for="male">Male</label>
+        <input type="radio" id="female" name="gender" value="female">
+        <label for="female">Female</label>
+        <input type="radio" id="other" name="gender" value="other">
+        <label for="other">Other</label>
+        <br>
+
+        <!-- Checkboxes -->
+        <label>Languages you know:</label>
+        <input type="checkbox" id="english" name="languages" value="english">
+        <label for="english">English</label>
+        <input type="checkbox" id="spanish" name="languages" value="spanish">
+        <label for="spanish">Spanish</label>
+        <input type="checkbox" id="french" name="languages" value="french">
+        <label for="french">French</label>
+        <br>
+
+        <!-- Select Dropdown -->
+        <label for="country">Country:</label>
+        <select id="country" name="country">
+            <option value="usa">USA</option>
+            <option value="canada">Canada</option>
+            <option value="uk">UK</option>
+            <option value="australia">Australia</option>
+            <option value="germany">Germany</option>
+        </select>
+        <br>
+
+        <!-- Textarea -->
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="4" cols="50" placeholder="Type your message here"></textarea>
+        <br>
+
+        <!-- Buttons -->
+        <button type="submit">Submit</button>
+        <button type="reset">Reset</button>
+    </form>
+}
+
+<h1>Life cycle Methods</h1>
+
+@foreach (var item in EventType)
+{
+    @item
+    <hr />
+}
+
+@code {
+    List<string> EventType = new List<string>();
+
+    protected override void OnInitialized()
+    {
+        EventType.Add(" 1 OnInit");
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        EventType.Add("2 OnInit Async");
+    }
+    protected override void OnParametersSet()
+    {
+        EventType.Add("3 On Parameter set ");
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        EventType.Add(" 4 OnParametersSet Async Started");
+    }
+    protected override bool ShouldRender()
+    {
+        EventType.Add(" 5 Should render called");
+        return true;
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        EventType.Add(" 6 OnAfterRenderStarted");
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        EventType.Add(" 7 OnAfterRender Async Started");
+    }
+}
