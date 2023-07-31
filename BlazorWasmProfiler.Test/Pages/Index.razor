@@ -1,21 +1,13 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<h1>Poor Man's Blazor Wasm Profiler</h1>
 
-<ul class="nav flex-column">
-    <li class="nav-item px-3">
-        <NavLink class="nav-link" href="MethodCallStatistics">
-            <span class="oi oi-list-rich" aria-hidden="true"></span> Method Call Statistics
-        </NavLink>
-    </li>
-    <li class="nav-item px-3">
-        <NavLink class="nav-link" href="RenderTimeStatistics">
-            <span class="oi oi-list-rich" aria-hidden="true"></span> Render Time Statistics
-        </NavLink>
-    </li>
-</ul>
+<p>
+    <a class="nav-link" href="MethodCallStatistics">Method Call Statistics</a>
+    <a class="nav-link" href="RenderTimeStatistics">Render Time Statistics</a>
+</p>
 
-@foreach (var item in Enumerable.Range(1, 100))
+@foreach (var item in Enumerable.Range(1, 10))
 {
     @item
     <hr />
@@ -31,8 +23,6 @@
         <label for="male">Male</label>
         <input type="radio" id="female" name="gender" value="female">
         <label for="female">Female</label>
-        <input type="radio" id="other" name="gender" value="other">
-        <label for="other">Other</label>
         <br>
 
         <!-- Checkboxes -->
