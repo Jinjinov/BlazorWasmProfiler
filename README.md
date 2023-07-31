@@ -51,3 +51,7 @@ It does not work with `OnParametersSetAsync()` or `OnAfterRenderAsync(bool first
 
 - 0.0.0.1:
     - Initial release
+
+![MethodCallStatistics](https://github.com/Jinjinov/BlazorWasmProfiler/blob/main/MethodCallStatistics.png)
+
+![RenderTimeStatistics](https://github.com/Jinjinov/BlazorWasmProfiler/blob/main/RenderTimeStatistics.png)
