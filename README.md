@@ -46,3 +46,8 @@ It does not work with `OnParametersSetAsync()` or `OnAfterRenderAsync(bool first
 
         <a href="MethodCallStatistics">Method Call Statistics</a>
         <a href="RenderTimeStatistics">Render Time Statistics</a>
+
+## Version history:
+
+- 0.0.0.1:
+    - Initial release
