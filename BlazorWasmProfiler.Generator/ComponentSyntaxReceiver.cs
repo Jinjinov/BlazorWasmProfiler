@@ -11,10 +11,12 @@ namespace BlazorWasmProfiler.Generator
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {
-            if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax &&
-                classDeclarationSyntax.BaseList?.Types.Any(t => t.Type.ToString().Contains("ComponentBase")) == true)
+            if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax)
             {
-                CandidateSyntaxNodes.Add(classDeclarationSyntax);
+                if (classDeclarationSyntax.BaseList?.Types.Any(t => t.Type.ToString().Contains("ComponentBase")) == true)
+                {
+                    CandidateSyntaxNodes.Add(classDeclarationSyntax);
+                }
             }
         }
     }
