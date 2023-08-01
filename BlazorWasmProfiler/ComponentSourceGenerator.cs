@@ -30,22 +30,17 @@ internal class ComponentSourceGenerator : ISourceGenerator
         {
             SyntaxNode root = classDeclaration.SyntaxTree.GetRoot();
 
-            bool hasOnParametersSetMethod = HasOnParametersSetMethod(classDeclaration);
+            MethodDeclarationSyntax? methodOnParametersSet = GetOnParametersSetMethod(classDeclaration);
 
-            if (hasOnParametersSetMethod)
+            if (methodOnParametersSet != null)
             {
-                MethodDeclarationSyntax? methodOnParametersSet = GetOnParametersSetMethod(classDeclaration);
+                MethodDeclarationSyntax updatedMethod = methodOnParametersSet.WithAttributeLists(SyntaxFactory.SingletonList(SyntaxFactory.AttributeList(
+                    SyntaxFactory.SingletonSeparatedList(SyntaxFactory.Attribute(SyntaxFactory.IdentifierName("RenderTimeTrackingAttribute")))
+                )));
 
-                if (methodOnParametersSet != null)
-                {
-                    MethodDeclarationSyntax updatedMethod = methodOnParametersSet.WithAttributeLists(SyntaxFactory.SingletonList(SyntaxFactory.AttributeList(
-                        SyntaxFactory.SingletonSeparatedList(SyntaxFactory.Attribute(SyntaxFactory.IdentifierName("RenderTimeTrackingAttribute")))
-                    )));
+                SyntaxNode newRoot = root.ReplaceNode(methodOnParametersSet, updatedMethod);
 
-                    SyntaxNode newRoot = root.ReplaceNode(methodOnParametersSet, updatedMethod);
-
-                    context.AddSource($"{classDeclaration.Identifier.ValueText}_Updated.cs", newRoot.NormalizeWhitespace().ToFullString());
-                }
+                context.AddSource($"{classDeclaration.Identifier.ValueText}_Updated.cs", newRoot.NormalizeWhitespace().ToFullString());
             }
             else
             {
@@ -58,16 +53,6 @@ internal class ComponentSourceGenerator : ISourceGenerator
         }
     }
 
-    private static bool HasOnParametersSetMethod(ClassDeclarationSyntax classDeclaration)
-    {
-        return classDeclaration.Members
-            .OfType<MethodDeclarationSyntax>()
-            .Any(method => method.Modifiers.Any(modifier => modifier.IsKind(SyntaxKind.ProtectedKeyword))
-                           && method.Modifiers.Any(modifier => modifier.IsKind(SyntaxKind.OverrideKeyword))
-                           && method.ReturnType.ToString() == "void"
-                           && method.Identifier.ValueText == "OnParametersSet");
-    }
-
     private static MethodDeclarationSyntax? GetOnParametersSetMethod(ClassDeclarationSyntax classDeclaration)
     {
         return classDeclaration.Members
@@ -76,19 +61,5 @@ internal class ComponentSourceGenerator : ISourceGenerator
                            && method.Modifiers.Any(modifier => modifier.IsKind(SyntaxKind.OverrideKeyword))
                            && method.ReturnType.ToString() == "void"
                            && method.Identifier.ValueText == "OnParametersSet");
-    }
-
-    private static IMethodSymbol? GetOnParametersSetMethod(Compilation compilation, ClassDeclarationSyntax classDeclaration)
-    {
-        INamedTypeSymbol? classSymbol = compilation.GetSemanticModel(classDeclaration.SyntaxTree).GetDeclaredSymbol(classDeclaration);
-
-        IMethodSymbol? method = classSymbol?.GetMembers("OnParametersSet").OfType<IMethodSymbol>().FirstOrDefault(m =>
-            m.DeclaredAccessibility == Accessibility.Protected &&
-            m.IsOverride &&
-            m.Parameters.Length == 0 &&
-            m.ReturnType.SpecialType == SpecialType.System_Void
-        );
-
-        return method;
     }
 }
