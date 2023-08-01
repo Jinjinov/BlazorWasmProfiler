@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BlazorWasmProfiler.Generator\BlazorWasmProfiler.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\BlazorWasmProfiler\BlazorWasmProfiler.csproj" />
   </ItemGroup>
 
