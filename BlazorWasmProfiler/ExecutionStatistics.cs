@@ -3,14 +3,13 @@ using System.Diagnostics;
 
 namespace BlazorWasmProfiler;
 
-[Serializable]
 public class ExecutionStatistics
 {
     private long _startTime;
     private bool _isTiming;
 
-    public string MethodName { get; set; } = string.Empty;
-    public string CallerMethodName { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Caller { get; set; } = string.Empty;
 
     public int Count { get; set; }
     public TimeSpan TotalTime { get; set; }

@@ -59,6 +59,7 @@ It does not work with `OnParametersSetAsync()` or `OnAfterRenderAsync(bool first
 - 0.0.1.0:
     - Excluded the body of `OnParametersSet()` and `OnAfterRender(bool firstRender)` from render timing
     - Render timing now works with `OnParametersSetAsync()` and `OnAfterRenderAsync(bool firstRender)`
+    - Added `enum StatisticsOrder` to get statistics ordered by any property
 - 0.0.0.1:
     - Initial release
 

@@ -1,5 +1,4 @@
 ﻿@page "/rendertimestatistics"
-@using BlazorWasmProfiler;
 
 <style>
     /* Basic table styles */
@@ -41,6 +40,16 @@
 
 @if (renderStatistics != null && renderStatistics.Count > 0)
 {
+    <p>
+        Order by:
+        <InputSelect @bind-Value="selectedOrder">
+            @foreach (var order in Enum.GetValues<StatisticsOrder>())
+            {
+                <option value="@order">@order.ToString()</option>
+            }
+        </InputSelect>
+    </p>
+
     <table class="table">
         <thead>
             <tr>
@@ -52,11 +61,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (ExecutionStatistics executionStatistics in renderStatistics.Values.OrderByDescending(stat => stat.GetAverageTime()))
+            @foreach (ExecutionStatistics executionStatistics in BlazorTimerAttribute.GetRenderStatistics(selectedOrder))
             {
                 <tr>
-                    <td>@executionStatistics.CallerMethodName</td>
-                    <td>@executionStatistics.MethodName</td>
+                    <td>@executionStatistics.Caller</td>
+                    <td>@executionStatistics.Name</td>
                     <td>@executionStatistics.Count</td>
                     <td>@executionStatistics.TotalTime.TotalMilliseconds</td>
                     <td>@executionStatistics.GetAverageTime().TotalMilliseconds</td>
@@ -71,6 +80,8 @@ else
 }
 
 @code {
+    private StatisticsOrder selectedOrder = StatisticsOrder.AverageTime;
+
     private IReadOnlyDictionary<string, ExecutionStatistics>? renderStatistics;
 
     protected override void OnInitialized()

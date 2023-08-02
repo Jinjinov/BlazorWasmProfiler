@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 
 namespace BlazorWasmProfiler;
@@ -17,6 +18,9 @@ public class BlazorTimerAttribute : Attribute
     public static IReadOnlyDictionary<string, ExecutionStatistics> GetMethodStatistics() => _methodStatistics;
     public static IReadOnlyDictionary<string, ExecutionStatistics> GetRenderStatistics() => _renderStatistics;
 
+    public static IEnumerable<ExecutionStatistics> GetMethodStatistics(StatisticsOrder order) => OrderStatisticsBy(_methodStatistics.Values, order);
+    public static IEnumerable<ExecutionStatistics> GetRenderStatistics(StatisticsOrder order) => OrderStatisticsBy(_renderStatistics.Values, order);
+
     [Advice(Kind.Before)]
     public void OnEntry([Argument(Source.Name)] string methodName, [Argument(Source.Type)] Type declaringType)
     {
@@ -30,7 +34,7 @@ public class BlazorTimerAttribute : Attribute
 
         if (!_methodStatistics.TryGetValue(methodKey, out var methodStatistics))
         {
-            methodStatistics = new ExecutionStatistics() { MethodName = methodFullName, CallerMethodName = callerFullName };
+            methodStatistics = new ExecutionStatistics() { Name = methodFullName, Caller = callerFullName };
             _methodStatistics[methodKey] = methodStatistics;
         }
 
@@ -69,7 +73,7 @@ public class BlazorTimerAttribute : Attribute
 
             if (!_renderStatistics.TryGetValue(renderKey, out var renderStatistics))
             {
-                renderStatistics = new ExecutionStatistics() { MethodName = declaringTypeName, CallerMethodName = callerClassName };
+                renderStatistics = new ExecutionStatistics() { Name = declaringTypeName, Caller = callerClassName };
                 _renderStatistics[renderKey] = renderStatistics;
             }
 
@@ -92,5 +96,18 @@ public class BlazorTimerAttribute : Attribute
         }
 
         return (string.Empty, string.Empty);
+    }
+
+    private static IEnumerable<ExecutionStatistics> OrderStatisticsBy(IEnumerable<ExecutionStatistics> statistics, StatisticsOrder order)
+    {
+        return order switch
+        {
+            StatisticsOrder.Caller => statistics.OrderBy(stat => stat.Caller),
+            StatisticsOrder.Name => statistics.OrderBy(stat => stat.Name),
+            StatisticsOrder.Count => statistics.OrderByDescending(stat => stat.Count),
+            StatisticsOrder.TotalTime => statistics.OrderByDescending(stat => stat.TotalTime.TotalMilliseconds),
+            StatisticsOrder.AverageTime => statistics.OrderByDescending(stat => stat.GetAverageTime().TotalMilliseconds),
+            _ => throw new ArgumentException("Invalid StatisticsOrder value.", nameof(order)),
+        };
     }
 }
