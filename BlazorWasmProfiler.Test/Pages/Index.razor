@@ -5,7 +5,18 @@
 <a href="MethodCallStatistics">Method Call Statistics</a>
 <a href="RenderTimeStatistics">Render Time Statistics</a>
 
-@foreach (var item in Enumerable.Range(1, 10))
+<p>
+    Repeat UI:
+    <InputSelect @bind-Value="_count">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="10">10</option>
+        <option value="100">100</option>
+        <option value="1000">1000</option>
+    </InputSelect>
+</p>
+
+@foreach (var item in Enumerable.Range(1, _count))
 {
     <hr />
     @item
@@ -57,6 +68,8 @@
 }
 
 @code {
+    private int _count = 1;
+
     protected override void OnInitialized()
     {
     }
