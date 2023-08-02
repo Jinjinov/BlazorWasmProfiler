@@ -52,7 +52,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (ExecutionStatistics executionStatistics in methodStatistics.Values)
+            @foreach (ExecutionStatistics executionStatistics in methodStatistics.Values.OrderByDescending(stat => stat.GetAverageTime()))
             {
                 <tr>
                     <td>@executionStatistics.CallerMethodName</td>

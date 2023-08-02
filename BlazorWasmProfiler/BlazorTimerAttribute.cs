@@ -36,17 +36,14 @@ public class BlazorTimerAttribute : Attribute
 
         methodStatistics.StartTiming();
 
-        if (methodName == "OnParametersSet")
+        if (methodName == "OnAfterRender" || methodName == "OnAfterRenderAsync")
         {
             string renderKey = declaringTypeName;
 
-            if (!_renderStatistics.TryGetValue(renderKey, out var renderStatistics))
+            if (_renderStatistics.TryGetValue(renderKey, out var renderStatistics))
             {
-                renderStatistics = new ExecutionStatistics() { MethodName = declaringTypeName, CallerMethodName = callerClassName };
-                _renderStatistics[renderKey] = renderStatistics;
+                renderStatistics.StopTiming();
             }
-
-            renderStatistics.StartTiming();
         }
     }
 
@@ -66,14 +63,17 @@ public class BlazorTimerAttribute : Attribute
             methodStatistics.StopTiming();
         }
 
-        if (methodName == "OnAfterRender")
+        if (methodName == "OnParametersSet" || methodName == "OnParametersSetAsync")
         {
             string renderKey = declaringTypeName;
 
-            if (_renderStatistics.TryGetValue(renderKey, out var renderStatistics))
+            if (!_renderStatistics.TryGetValue(renderKey, out var renderStatistics))
             {
-                renderStatistics.StopTiming();
+                renderStatistics = new ExecutionStatistics() { MethodName = declaringTypeName, CallerMethodName = callerClassName };
+                _renderStatistics[renderKey] = renderStatistics;
             }
+
+            renderStatistics.StartTiming();
         }
     }
 

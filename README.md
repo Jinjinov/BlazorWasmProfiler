@@ -4,15 +4,17 @@ Poor Man's Blazor Wasm Profiler
 
 It uses `AspectInjector` to time the execution of every method in your Blazor WASM project.
 
-It also measures the render time of every Blazor Component that defines these two methods:
+It also measures the render time of every Blazor Component that defines these methods:
 
         protected override void OnParametersSet()
-        {
-        }
+        // or
+        protected override async Task OnParametersSetAsync()
+
+        // and
 
         protected override void OnAfterRender(bool firstRender)
-        {
-        }
+        // or
+        protected override async Task OnAfterRenderAsync(bool firstRender)
 
 It does not work with `OnParametersSetAsync()` or `OnAfterRenderAsync(bool firstRender)`
 
@@ -32,7 +34,12 @@ It does not work with `OnParametersSetAsync()` or `OnAfterRenderAsync(bool first
 
         var renderStatistics = BlazorTimerAttribute.GetRenderStatistics();
 
-3. (optional) If you want you can change
+4. (optional) Use `MethodCallStatistics` and `RenderTimeStatistics` as components
+
+        <BlazorWasmProfiler.MethodCallStatistics />
+        <BlazorWasmProfiler.RenderTimeStatistics />
+
+5. (optional) Change
 
         <Router AppAssembly="@typeof(App).Assembly">
 
@@ -42,13 +49,16 @@ It does not work with `OnParametersSetAsync()` or `OnAfterRenderAsync(bool first
             AppAssembly="@typeof(App).Assembly" 
             AdditionalAssemblies="new[] { typeof(BlazorWasmProfiler.BlazorTimerAttribute).Assembly }">
 
-    then you can use these two pages that display statistics in a table
+    and use `MethodCallStatistics` and `RenderTimeStatistics` as pages
 
         <a href="MethodCallStatistics">Method Call Statistics</a>
         <a href="RenderTimeStatistics">Render Time Statistics</a>
 
 ## Version history:
 
+- 0.0.1.0:
+    - Excluded the body of `OnParametersSet()` and `OnAfterRender(bool firstRender)` from render timing
+    - Render timing now works with `OnParametersSetAsync()` and `OnAfterRenderAsync(bool firstRender)`
 - 0.0.0.1:
     - Initial release
 

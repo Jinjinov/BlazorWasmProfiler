@@ -7,6 +7,7 @@ namespace BlazorWasmProfiler;
 public class ExecutionStatistics
 {
     private long _startTime;
+    private bool _isTiming;
 
     public string MethodName { get; set; } = string.Empty;
     public string CallerMethodName { get; set; } = string.Empty;
@@ -18,13 +19,20 @@ public class ExecutionStatistics
 
     public void StartTiming()
     {
+        _isTiming = true;
+
         _startTime = Stopwatch.GetTimestamp();
     }
 
     public void StopTiming()
     {
-        TotalTime += Stopwatch.GetElapsedTime(_startTime);
+        if (_isTiming)
+        {
+            _isTiming = false;
 
-        Count++;
+            TotalTime += Stopwatch.GetElapsedTime(_startTime);
+
+            Count++;
+        }
     }
 }
