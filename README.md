@@ -16,14 +16,12 @@ It also measures the render time of every Blazor Component that defines these me
         // or
         protected override async Task OnAfterRenderAsync(bool firstRender)
 
-It does not work with `OnParametersSetAsync()` or `OnAfterRenderAsync(bool firstRender)`
-
 ## How to use:
 
 1. Include NuGet package from https://www.nuget.org/packages/BlazorWasmProfiler
 
         <ItemGroup>
-            <PackageReference Include="BlazorWasmProfiler" Version="0.0.0.1" />
+            <PackageReference Include="BlazorWasmProfiler" Version="0.0.1.0" />
         </ItemGroup>
 
 2. Add `[assembly: BlazorTimer]` somewhere in your code.
@@ -31,7 +29,6 @@ It does not work with `OnParametersSetAsync()` or `OnAfterRenderAsync(bool first
 3. Access statistics:
 
         var methodStatistics = BlazorTimerAttribute.GetMethodStatistics();
-
         var renderStatistics = BlazorTimerAttribute.GetRenderStatistics();
 
 4. (optional) Use `MethodCallStatistics` and `RenderTimeStatistics` as components

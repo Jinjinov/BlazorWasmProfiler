@@ -12,8 +12,8 @@
   <PropertyGroup>
     <Product>BlazorWasmProfiler</Product>
     <PackageId>BlazorWasmProfiler</PackageId>
-    <PackageVersion>0.0.0.1</PackageVersion>
-    <Version>0.0.0.1</Version>
+    <PackageVersion>0.0.1.0</PackageVersion>
+    <Version>0.0.1.0</Version>
     <Authors>Jinjinov</Authors>
     <Description>Poor Man's Blazor Wasm Profiler</Description>
     <Copyright>Copyright (c) Jinjinov 2023</Copyright>
