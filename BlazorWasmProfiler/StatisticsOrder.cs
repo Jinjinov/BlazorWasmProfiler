@@ -1,10 +1,11 @@
-﻿namespace BlazorWasmProfiler;
-
-public enum StatisticsOrder
+﻿namespace BlazorWasmProfiler
 {
-    Caller,
-    Name,
-    Count,
-    TotalTime,
-    AverageTime
+    public enum StatisticsOrder
+    {
+        Caller,
+        Name,
+        Count,
+        TotalTime,
+        AverageTime
+    }
 }

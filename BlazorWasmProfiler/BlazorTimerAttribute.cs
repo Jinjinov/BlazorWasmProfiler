@@ -1,32 +1,33 @@
 ﻿using AspectInjector.Broker;
 using System;
 
-namespace BlazorWasmProfiler;
-
-[Aspect(Scope.Global)]
-[Injection(typeof(BlazorTimerAttribute))]
-[AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-public class BlazorTimerAttribute : Attribute
+namespace BlazorWasmProfiler
 {
-    [Advice(Kind.Before)]
-    public void OnEntry([Argument(Source.Name)] string methodName, [Argument(Source.Type)] Type declaringType)
+    [Aspect(Scope.Global)]
+    [Injection(typeof(BlazorTimerAttribute))]
+    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    public class BlazorTimerAttribute : Attribute
     {
-        ExecutionStatistics.MethodTimerStart(methodName, declaringType);
-
-        if (methodName == "OnAfterRender" || methodName == "OnAfterRenderAsync")
+        [Advice(Kind.Before)]
+        public void OnEntry([Argument(Source.Name)] string methodName, [Argument(Source.Type)] Type declaringType)
         {
-            ExecutionStatistics.RenderTimerStop(declaringType);
+            ExecutionStatistics.MethodTimerStart(methodName, declaringType);
+
+            if (methodName == "OnAfterRender" || methodName == "OnAfterRenderAsync")
+            {
+                ExecutionStatistics.RenderTimerStop(declaringType);
+            }
         }
-    }
 
-    [Advice(Kind.After)]
-    public void OnExit([Argument(Source.Name)] string methodName, [Argument(Source.Type)] Type declaringType)
-    {
-        ExecutionStatistics.MethodTimerStop(methodName, declaringType);
-
-        if (methodName == "OnParametersSet" || methodName == "OnParametersSetAsync")
+        [Advice(Kind.After)]
+        public void OnExit([Argument(Source.Name)] string methodName, [Argument(Source.Type)] Type declaringType)
         {
-            ExecutionStatistics.RenderTimerStart(declaringType);
+            ExecutionStatistics.MethodTimerStop(methodName, declaringType);
+
+            if (methodName == "OnParametersSet" || methodName == "OnParametersSetAsync")
+            {
+                ExecutionStatistics.RenderTimerStart(declaringType);
+            }
         }
     }
 }

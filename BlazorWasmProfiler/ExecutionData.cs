@@ -1,37 +1,38 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace BlazorWasmProfiler;
-
-public class ExecutionData
+namespace BlazorWasmProfiler
 {
-    private long _startTime;
-    private bool _isTiming;
-
-    public string Name { get; set; } = string.Empty;
-    public string Caller { get; set; } = string.Empty;
-
-    public int Count { get; set; }
-    public TimeSpan TotalTime { get; set; }
-
-    public TimeSpan GetAverageTime() => Count == 0 ? TimeSpan.Zero : TimeSpan.FromTicks(TotalTime.Ticks / Count);
-
-    public void StartTiming()
+    public class ExecutionData
     {
-        _isTiming = true;
+        private long _startTime;
+        private bool _isTiming;
 
-        _startTime = Stopwatch.GetTimestamp();
-    }
+        public string Name { get; set; } = string.Empty;
+        public string Caller { get; set; } = string.Empty;
 
-    public void StopTiming()
-    {
-        if (_isTiming)
+        public int Count { get; set; }
+        public TimeSpan TotalTime { get; set; }
+
+        public TimeSpan GetAverageTime() => Count == 0 ? TimeSpan.Zero : TimeSpan.FromTicks(TotalTime.Ticks / Count);
+
+        public void StartTiming()
         {
-            _isTiming = false;
+            _isTiming = true;
 
-            TotalTime += Stopwatch.GetElapsedTime(_startTime);
+            _startTime = Stopwatch.GetTimestamp();
+        }
 
-            Count++;
+        public void StopTiming()
+        {
+            if (_isTiming)
+            {
+                _isTiming = false;
+
+                TotalTime += Stopwatch.GetElapsedTime(_startTime);
+
+                Count++;
+            }
         }
     }
 }
