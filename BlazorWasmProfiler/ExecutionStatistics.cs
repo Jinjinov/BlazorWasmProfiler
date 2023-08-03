@@ -27,7 +27,7 @@ namespace BlazorWasmProfiler
 
             string methodKey = $"{callerFullName}-{methodFullName}";
 
-            if (!_methodStatistics.TryGetValue(methodKey, out var methodStatistics))
+            if (!_methodStatistics.TryGetValue(methodKey, out ExecutionData methodStatistics))
             {
                 methodStatistics = new ExecutionData() { Name = methodFullName, Caller = callerFullName };
                 _methodStatistics[methodKey] = methodStatistics;
@@ -40,7 +40,7 @@ namespace BlazorWasmProfiler
         {
             string declaringTypeName = declaringType.FullName ?? string.Empty;
 
-            if (_renderStatistics.TryGetValue(declaringTypeName, out var renderStatistics))
+            if (_renderStatistics.TryGetValue(declaringTypeName, out ExecutionData renderStatistics))
             {
                 renderStatistics.StopTiming();
             }
@@ -56,7 +56,7 @@ namespace BlazorWasmProfiler
 
             string methodKey = $"{callerFullName}-{methodFullName}";
 
-            if (_methodStatistics.TryGetValue(methodKey, out var methodStatistics))
+            if (_methodStatistics.TryGetValue(methodKey, out ExecutionData methodStatistics))
             {
                 methodStatistics.StopTiming();
             }
@@ -68,7 +68,7 @@ namespace BlazorWasmProfiler
 
             (string callerClassName, string callerMethodName) = GetCallerMethodName();
 
-            if (!_renderStatistics.TryGetValue(declaringTypeName, out var renderStatistics))
+            if (!_renderStatistics.TryGetValue(declaringTypeName, out ExecutionData renderStatistics))
             {
                 renderStatistics = new ExecutionData() { Name = declaringTypeName, Caller = callerClassName };
                 _renderStatistics[declaringTypeName] = renderStatistics;

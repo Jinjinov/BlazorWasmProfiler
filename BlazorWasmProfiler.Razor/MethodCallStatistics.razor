@@ -43,7 +43,7 @@
     <p>
         Order by:
         <InputSelect @bind-Value="selectedOrder">
-            @foreach (var order in Enum.GetValues<StatisticsOrder>())
+            @foreach (StatisticsOrder order in Enum.GetValues<StatisticsOrder>())
             {
                 <option value="@order">@order.ToString()</option>
             }
