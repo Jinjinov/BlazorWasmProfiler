@@ -8,7 +8,7 @@ namespace BlazorWasmProfiler;
 public class ComponentMethodInjector : Task
 {
     [Required]
-    public string AssemblyPath { get; set; }
+    public string AssemblyPath { get; set; } = string.Empty;
 
     public override bool Execute()
     {
