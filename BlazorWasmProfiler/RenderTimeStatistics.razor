@@ -61,7 +61,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (ExecutionData executionData in BlazorTimerAttribute.GetRenderStatistics(selectedOrder))
+            @foreach (ExecutionData executionData in ExecutionStatistics.GetRenderStatistics(selectedOrder))
             {
                 <tr>
                     <td>@executionData.Caller</td>
@@ -86,6 +86,6 @@ else
 
     protected override void OnInitialized()
     {
-        renderStatistics = BlazorTimerAttribute.GetRenderStatistics();
+        renderStatistics = ExecutionStatistics.GetRenderStatistics();
     }
 }
