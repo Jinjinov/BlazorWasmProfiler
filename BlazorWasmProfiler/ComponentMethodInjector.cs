@@ -36,16 +36,21 @@ namespace BlazorWasmProfiler
                                     method.IsVirtual &&
                                     method.ReturnType.FullName == "System.Void")
                                 {
-                                    // Add stopwatch start at the beginning of the method
                                     ILProcessor ilProcessor = method.Body.GetILProcessor();
-                                    Instruction firstInstruction = method.Body.Instructions[0];
-                                    ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Ldstr, type.FullName));
-                                    ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Call, renderTimerStartMethod));
 
-                                    // Add stopwatch stop at the end of the method
-                                    Instruction lastInstruction = method.Body.Instructions[method.Body.Instructions.Count - 1];
-                                    ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Ldstr, type.FullName));
-                                    ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Call, renderTimerStopMethod));
+                                    if (method.Name == "OnAfterRender")
+                                    {
+                                        Instruction firstInstruction = method.Body.Instructions[0];
+                                        ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Ldstr, type.FullName));
+                                        ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Call, renderTimerStopMethod));
+                                    }
+
+                                    if (method.Name == "OnParametersSet")
+                                    {
+                                        Instruction lastInstruction = method.Body.Instructions[method.Body.Instructions.Count - 1];
+                                        ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Ldstr, type.FullName));
+                                        ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Call, renderTimerStartMethod));
+                                    }
                                 }
                             }
                         }
