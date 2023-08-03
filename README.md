@@ -31,6 +31,9 @@ It also measures the render time of every Blazor Component that defines these me
         var methodStatistics = BlazorTimerAttribute.GetMethodStatistics();
         var renderStatistics = BlazorTimerAttribute.GetRenderStatistics();
 
+        var methodStatistics = ExecutionStatistics.GetMethodStatistics();
+        var renderStatistics = ExecutionStatistics.GetRenderStatistics();
+
 4. (optional) Use `MethodCallStatistics` and `RenderTimeStatistics` as components
 
         <BlazorWasmProfiler.MethodCallStatistics />
