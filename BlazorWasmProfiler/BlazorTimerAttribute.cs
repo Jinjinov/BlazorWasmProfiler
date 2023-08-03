@@ -15,7 +15,7 @@ public class BlazorTimerAttribute : Attribute
 
         if (methodName == "OnAfterRender" || methodName == "OnAfterRenderAsync")
         {
-            ExecutionStatistics.RenderTimerStop(methodName, declaringType);
+            ExecutionStatistics.RenderTimerStop(declaringType);
         }
     }
 
@@ -26,7 +26,7 @@ public class BlazorTimerAttribute : Attribute
 
         if (methodName == "OnParametersSet" || methodName == "OnParametersSetAsync")
         {
-            ExecutionStatistics.RenderTimerStart(methodName, declaringType);
+            ExecutionStatistics.RenderTimerStart(declaringType);
         }
     }
 }
