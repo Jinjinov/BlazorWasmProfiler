@@ -1,13 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
   <PropertyGroup>
-    <Product>BlazorWasmProfiler</Product>
-    <PackageId>BlazorWasmProfiler</PackageId>
+    <Product>BlazorWasmProfiler.Razor</Product>
+    <PackageId>BlazorWasmProfiler.Razor</PackageId>
     <PackageVersion>0.0.1.0</PackageVersion>
     <Version>0.0.1.0</Version>
     <Authors>Jinjinov</Authors>
@@ -24,13 +28,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="BlazorWasmProfiler.targets">
-      <Pack>true</Pack>
-      <PackagePath>build</PackagePath>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -38,9 +35,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspectInjector" Version="2.8.2" />
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.6.3" />
-    <PackageReference Include="Mono.Cecil" Version="0.11.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorWasmProfiler\BlazorWasmProfiler.csproj" />
   </ItemGroup>
 
 </Project>
