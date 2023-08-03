@@ -17,9 +17,8 @@ namespace BlazorWasmProfiler
         public static IEnumerable<ExecutionData> GetMethodStatistics(StatisticsOrder order) => OrderStatisticsBy(_methodStatistics.Values, order);
         public static IEnumerable<ExecutionData> GetRenderStatistics(StatisticsOrder order) => OrderStatisticsBy(_renderStatistics.Values, order);
 
-        public static void MethodTimerStart(string methodName, Type declaringType)
+        public static void MethodTimerStart(string methodName, string declaringTypeName)
         {
-            string declaringTypeName = declaringType.FullName ?? string.Empty;
             string methodFullName = $"{declaringTypeName}.{methodName}";
 
             (string callerClassName, string callerMethodName) = GetCallerMethodName();
@@ -36,19 +35,16 @@ namespace BlazorWasmProfiler
             methodStatistics.StartTiming();
         }
 
-        public static void RenderTimerStop(Type declaringType)
+        public static void RenderTimerStop(string declaringTypeName)
         {
-            string declaringTypeName = declaringType.FullName ?? string.Empty;
-
             if (_renderStatistics.TryGetValue(declaringTypeName, out ExecutionData renderStatistics))
             {
                 renderStatistics.StopTiming();
             }
         }
 
-        public static void MethodTimerStop(string methodName, Type declaringType)
+        public static void MethodTimerStop(string methodName, string declaringTypeName)
         {
-            string declaringTypeName = declaringType.FullName ?? string.Empty;
             string methodFullName = $"{declaringTypeName}.{methodName}";
 
             (string callerClassName, string callerMethodName) = GetCallerMethodName();
@@ -62,10 +58,8 @@ namespace BlazorWasmProfiler
             }
         }
 
-        public static void RenderTimerStart(Type declaringType)
+        public static void RenderTimerStart(string declaringTypeName)
         {
-            string declaringTypeName = declaringType.FullName ?? string.Empty;
-
             (string callerClassName, string callerMethodName) = GetCallerMethodName();
 
             if (!_renderStatistics.TryGetValue(declaringTypeName, out ExecutionData renderStatistics))
