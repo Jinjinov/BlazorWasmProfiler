@@ -79,7 +79,7 @@ public static class ExecutionStatistics
     {
         StackTrace stackTrace = new();
 
-        if (stackTrace.GetFrame(3) is StackFrame callerFrame && callerFrame.GetMethod() is MethodBase method)
+        if (stackTrace.GetFrame(4) is StackFrame callerFrame && callerFrame.GetMethod() is MethodBase method)
         {
             string callerMethodName = method.Name;
             string callerClassName = method.DeclaringType?.FullName ?? string.Empty;
