@@ -12,14 +12,14 @@ namespace BlazorWasmProfiler;
 [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 public class BlazorTimerAttribute : Attribute
 {
-    private static readonly Dictionary<string, ExecutionStatistics> _methodStatistics = new();
-    private static readonly Dictionary<string, ExecutionStatistics> _renderStatistics = new();
+    private static readonly Dictionary<string, ExecutionData> _methodStatistics = new();
+    private static readonly Dictionary<string, ExecutionData> _renderStatistics = new();
 
-    public static IReadOnlyDictionary<string, ExecutionStatistics> GetMethodStatistics() => _methodStatistics;
-    public static IReadOnlyDictionary<string, ExecutionStatistics> GetRenderStatistics() => _renderStatistics;
+    public static IReadOnlyDictionary<string, ExecutionData> GetMethodStatistics() => _methodStatistics;
+    public static IReadOnlyDictionary<string, ExecutionData> GetRenderStatistics() => _renderStatistics;
 
-    public static IEnumerable<ExecutionStatistics> GetMethodStatistics(StatisticsOrder order) => OrderStatisticsBy(_methodStatistics.Values, order);
-    public static IEnumerable<ExecutionStatistics> GetRenderStatistics(StatisticsOrder order) => OrderStatisticsBy(_renderStatistics.Values, order);
+    public static IEnumerable<ExecutionData> GetMethodStatistics(StatisticsOrder order) => OrderStatisticsBy(_methodStatistics.Values, order);
+    public static IEnumerable<ExecutionData> GetRenderStatistics(StatisticsOrder order) => OrderStatisticsBy(_renderStatistics.Values, order);
 
     [Advice(Kind.Before)]
     public void OnEntry([Argument(Source.Name)] string methodName, [Argument(Source.Type)] Type declaringType)
@@ -34,7 +34,7 @@ public class BlazorTimerAttribute : Attribute
 
         if (!_methodStatistics.TryGetValue(methodKey, out var methodStatistics))
         {
-            methodStatistics = new ExecutionStatistics() { Name = methodFullName, Caller = callerFullName };
+            methodStatistics = new ExecutionData() { Name = methodFullName, Caller = callerFullName };
             _methodStatistics[methodKey] = methodStatistics;
         }
 
@@ -73,7 +73,7 @@ public class BlazorTimerAttribute : Attribute
 
             if (!_renderStatistics.TryGetValue(renderKey, out var renderStatistics))
             {
-                renderStatistics = new ExecutionStatistics() { Name = declaringTypeName, Caller = callerClassName };
+                renderStatistics = new ExecutionData() { Name = declaringTypeName, Caller = callerClassName };
                 _renderStatistics[renderKey] = renderStatistics;
             }
 
@@ -98,7 +98,7 @@ public class BlazorTimerAttribute : Attribute
         return (string.Empty, string.Empty);
     }
 
-    private static IEnumerable<ExecutionStatistics> OrderStatisticsBy(IEnumerable<ExecutionStatistics> statistics, StatisticsOrder order)
+    private static IEnumerable<ExecutionData> OrderStatisticsBy(IEnumerable<ExecutionData> statistics, StatisticsOrder order)
     {
         return order switch
         {

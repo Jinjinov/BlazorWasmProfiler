@@ -61,14 +61,14 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (ExecutionStatistics executionStatistics in BlazorTimerAttribute.GetRenderStatistics(selectedOrder))
+            @foreach (ExecutionData executionData in BlazorTimerAttribute.GetRenderStatistics(selectedOrder))
             {
                 <tr>
-                    <td>@executionStatistics.Caller</td>
-                    <td>@executionStatistics.Name</td>
-                    <td>@executionStatistics.Count</td>
-                    <td>@executionStatistics.TotalTime.TotalMilliseconds</td>
-                    <td>@executionStatistics.GetAverageTime().TotalMilliseconds</td>
+                    <td>@executionData.Caller</td>
+                    <td>@executionData.Name</td>
+                    <td>@executionData.Count</td>
+                    <td>@executionData.TotalTime.TotalMilliseconds</td>
+                    <td>@executionData.GetAverageTime().TotalMilliseconds</td>
                 </tr>
             }
         </tbody>
@@ -82,7 +82,7 @@ else
 @code {
     private StatisticsOrder selectedOrder = StatisticsOrder.AverageTime;
 
-    private IReadOnlyDictionary<string, ExecutionStatistics>? renderStatistics;
+    private IReadOnlyDictionary<string, ExecutionData>? renderStatistics;
 
     protected override void OnInitialized()
     {

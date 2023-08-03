@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace BlazorWasmProfiler;
 
-public class ExecutionStatistics
+public class ExecutionData
 {
     private long _startTime;
     private bool _isTiming;
