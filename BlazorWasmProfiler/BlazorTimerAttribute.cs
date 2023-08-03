@@ -11,12 +11,22 @@ public class BlazorTimerAttribute : Attribute
     [Advice(Kind.Before)]
     public void OnEntry([Argument(Source.Name)] string methodName, [Argument(Source.Type)] Type declaringType)
     {
-        ExecutionStatistics.OnEntry(methodName, declaringType);
+        ExecutionStatistics.MethodTimerStart(methodName, declaringType);
+
+        if (methodName == "OnAfterRender" || methodName == "OnAfterRenderAsync")
+        {
+            ExecutionStatistics.RenderTimerStop(methodName, declaringType);
+        }
     }
 
     [Advice(Kind.After)]
     public void OnExit([Argument(Source.Name)] string methodName, [Argument(Source.Type)] Type declaringType)
     {
-        ExecutionStatistics.OnExit(methodName, declaringType);
+        ExecutionStatistics.MethodTimerStop(methodName, declaringType);
+
+        if (methodName == "OnParametersSet" || methodName == "OnParametersSetAsync")
+        {
+            ExecutionStatistics.RenderTimerStart(methodName, declaringType);
+        }
     }
 }

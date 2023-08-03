@@ -17,77 +17,70 @@ public static class ExecutionStatistics
     public static IEnumerable<ExecutionData> GetMethodStatistics(StatisticsOrder order) => OrderStatisticsBy(_methodStatistics.Values, order);
     public static IEnumerable<ExecutionData> GetRenderStatistics(StatisticsOrder order) => OrderStatisticsBy(_renderStatistics.Values, order);
 
-    public static void OnEntry(string methodName, Type declaringType)
+    public static void MethodTimerStart(string methodName, Type declaringType)
     {
-        string declaringTypeName = declaringType.FullName ?? string.Empty;
-        string methodFullName = $"{declaringTypeName}.{methodName}";
+        Names names = GetNames(methodName, declaringType);
 
-        (string callerClassName, string callerMethodName) = GetCallerMethodName();
-        string callerFullName = $"{callerClassName}.{callerMethodName}";
-
-        string methodKey = $"{callerFullName}-{methodFullName}";
-
-        if (!_methodStatistics.TryGetValue(methodKey, out var methodStatistics))
+        if (!_methodStatistics.TryGetValue(names.MethodKey, out var methodStatistics))
         {
-            methodStatistics = new ExecutionData() { Name = methodFullName, Caller = callerFullName };
-            _methodStatistics[methodKey] = methodStatistics;
+            methodStatistics = new ExecutionData() { Name = names.MethodFullName, Caller = names.CallerFullName };
+            _methodStatistics[names.MethodKey] = methodStatistics;
         }
 
         methodStatistics.StartTiming();
+    }
 
-        if (methodName == "OnAfterRender" || methodName == "OnAfterRenderAsync")
+    public static void RenderTimerStop(string methodName, Type declaringType)
+    {
+        Names names = GetNames(methodName, declaringType);
+
+        string renderKey = names.DeclaringTypeName;
+
+        if (_renderStatistics.TryGetValue(renderKey, out var renderStatistics))
         {
-            string renderKey = declaringTypeName;
-
-            if (_renderStatistics.TryGetValue(renderKey, out var renderStatistics))
-            {
-                renderStatistics.StopTiming();
-            }
+            renderStatistics.StopTiming();
         }
     }
 
-    public static void OnExit(string methodName, Type declaringType)
+    public static void MethodTimerStop(string methodName, Type declaringType)
     {
-        string declaringTypeName = declaringType.FullName ?? string.Empty;
-        string methodFullName = $"{declaringTypeName}.{methodName}";
+        Names names = GetNames(methodName, declaringType);
 
-        (string callerClassName, string callerMethodName) = GetCallerMethodName();
-        string callerFullName = $"{callerClassName}.{callerMethodName}";
-
-        string methodKey = $"{callerFullName}-{methodFullName}";
-
-        if (_methodStatistics.TryGetValue(methodKey, out var methodStatistics))
+        if (_methodStatistics.TryGetValue(names.MethodKey, out var methodStatistics))
         {
             methodStatistics.StopTiming();
         }
-
-        if (methodName == "OnParametersSet" || methodName == "OnParametersSetAsync")
-        {
-            string renderKey = declaringTypeName;
-
-            if (!_renderStatistics.TryGetValue(renderKey, out var renderStatistics))
-            {
-                renderStatistics = new ExecutionData() { Name = declaringTypeName, Caller = callerClassName };
-                _renderStatistics[renderKey] = renderStatistics;
-            }
-
-            renderStatistics.StartTiming();
-        }
     }
 
-    private static (string callerClassName, string callerMethodName) GetCallerMethodName()
+    public static void RenderTimerStart(string methodName, Type declaringType)
     {
-        StackTrace stackTrace = new();
+        Names names = GetNames(methodName, declaringType);
 
-        if (stackTrace.GetFrame(4) is StackFrame callerFrame && callerFrame.GetMethod() is MethodBase method)
+        string renderKey = names.DeclaringTypeName;
+
+        if (!_renderStatistics.TryGetValue(renderKey, out var renderStatistics))
         {
-            string callerMethodName = method.Name;
-            string callerClassName = method.DeclaringType?.FullName ?? string.Empty;
-
-            return (callerClassName, callerMethodName);
+            renderStatistics = new ExecutionData() { Name = names.DeclaringTypeName, Caller = names.CallerClassName };
+            _renderStatistics[renderKey] = renderStatistics;
         }
 
-        return (string.Empty, string.Empty);
+        renderStatistics.StartTiming();
+    }
+
+    public static Names GetNames(string methodName, Type declaringType)
+    {
+        string callerClassName = string.Empty;
+        string callerMethodName = string.Empty;
+
+        StackTrace stackTrace = new();
+
+        if (stackTrace.GetFrame(3) is StackFrame callerFrame && callerFrame.GetMethod() is MethodBase method)
+        {
+            callerClassName = method.DeclaringType?.FullName ?? string.Empty;
+            callerMethodName = method.Name;
+        }
+
+        return new Names(methodName, declaringType.FullName ?? string.Empty, callerClassName, callerMethodName);
     }
 
     private static IEnumerable<ExecutionData> OrderStatisticsBy(IEnumerable<ExecutionData> statistics, StatisticsOrder order)
