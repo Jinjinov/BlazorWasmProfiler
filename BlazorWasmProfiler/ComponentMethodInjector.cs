@@ -3,6 +3,7 @@ using Microsoft.Build.Utilities;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
+using System.Linq;
 
 namespace BlazorWasmProfiler
 {
@@ -17,6 +18,11 @@ namespace BlazorWasmProfiler
             {
                 AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(AssemblyPath);
 
+                // Load ExecutionStatistics type and methods
+                TypeReference executionStatisticsType = assembly.MainModule.ImportReference(typeof(ExecutionStatistics));
+                MethodReference renderTimerStartMethod = assembly.MainModule.ImportReference(executionStatisticsType.Resolve().Methods.First(m => m.Name == "RenderTimerStart"));
+                MethodReference renderTimerStopMethod = assembly.MainModule.ImportReference(executionStatisticsType.Resolve().Methods.First(m => m.Name == "RenderTimerStop"));
+
                 foreach (ModuleDefinition module in assembly.Modules)
                 {
                     foreach (TypeDefinition type in module.Types)
@@ -25,28 +31,35 @@ namespace BlazorWasmProfiler
                         {
                             foreach (MethodDefinition method in type.Methods)
                             {
-                                if ((method.Name == "OnParametersSet" || method.Name == "OnAfterRender") && 
-                                    method.IsFamily && 
-                                    method.IsVirtual && 
+                                if ((method.Name == "OnParametersSet" || method.Name == "OnAfterRender") &&
+                                    method.IsFamily &&
+                                    method.IsVirtual &&
                                     method.ReturnType.FullName == "System.Void")
                                 {
                                     // Add stopwatch start at the beginning of the method
                                     ILProcessor ilProcessor = method.Body.GetILProcessor();
-                                    //ilProcessor.InsertBefore(method.Body.Instructions[0], ilProcessor.Create(OpCodes.Ldstr, type.FullName));
-                                    //ilProcessor.InsertBefore(method.Body.Instructions[1], ilProcessor.Create(OpCodes.Call, typeof(ExecutionStatistics).GetMethod("StartTimingMethod")));
+                                    Instruction firstInstruction = method.Body.Instructions[0];
+                                    ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Ldtoken, type));
+                                    ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Call, assembly.MainModule.ImportReference(typeof(Type).GetMethod("GetTypeFromHandle"))));
+                                    ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Call, renderTimerStartMethod));
+
                                     // Add stopwatch stop at the end of the method
-                                    //ilProcessor.InsertBefore(method.Body.Instructions[method.Body.Instructions.Count - 1], ilProcessor.Create(OpCodes.Ldstr, type.FullName));
-                                    //ilProcessor.InsertBefore(method.Body.Instructions[method.Body.Instructions.Count - 1], ilProcessor.Create(OpCodes.Call, typeof(ExecutionStatistics).GetMethod("StopTimingMethod")));
+                                    Instruction lastInstruction = method.Body.Instructions[method.Body.Instructions.Count - 1];
+                                    ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Ldtoken, type));
+                                    ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Call, assembly.MainModule.ImportReference(typeof(Type).GetMethod("GetTypeFromHandle"))));
+                                    ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Call, renderTimerStopMethod));
                                 }
                             }
                         }
                     }
                 }
+
+                // Save the modified assembly back to the original file
+                assembly.Write(AssemblyPath);
             }
             catch (Exception ex)
             {
                 Log.LogError("Error while inspecting the project: " + ex.Message);
-
                 return false;
             }
 
