@@ -6,7 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
 
-[assembly: BlazorTimer]
+[assembly: MethodTimer]
+[assembly: RenderTimer]
 
 WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

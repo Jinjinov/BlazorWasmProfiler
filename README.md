@@ -24,7 +24,12 @@ It also measures the render time of every Blazor Component that defines these me
             <PackageReference Include="BlazorWasmProfiler" Version="0.0.1.0" />
         </ItemGroup>
 
-2. Add `[assembly: BlazorTimer]` somewhere in your code.
+2. Add the attribute somewhere in your code
+
+        [assembly: BlazorTimer]
+
+        [assembly: MethodTimer]
+        [assembly: RenderTimer]
 
 3. Access statistics:
 

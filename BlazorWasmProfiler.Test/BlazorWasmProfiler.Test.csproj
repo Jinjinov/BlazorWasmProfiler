@@ -13,10 +13,11 @@
   <ItemGroup>
     <ProjectReference Include="..\BlazorWasmProfiler.Generator\BlazorWasmProfiler.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\BlazorWasmProfiler.Razor\BlazorWasmProfiler.Razor.csproj" />
+    <ProjectReference Include="..\BlazorWasmProfiler.Task\BlazorWasmProfiler.Task.csproj" />
     <ProjectReference Include="..\BlazorWasmProfiler\BlazorWasmProfiler.csproj" />
   </ItemGroup>
 
-  <!--<UsingTask TaskName="BlazorWasmProfiler.ComponentMethodInjector" AssemblyFile="$(TargetDir)BlazorWasmProfiler.dll" />
+  <!--<UsingTask TaskName="BlazorWasmProfiler.ComponentMethodInjector" AssemblyFile="$(TargetDir)BlazorWasmProfiler.Task.dll" />
   <Target Name="ComponentMethodInjection" AfterTargets="Build">
     <BlazorWasmProfiler.ComponentMethodInjector AssemblyPath="$(TargetPath)" />
   </Target>-->
