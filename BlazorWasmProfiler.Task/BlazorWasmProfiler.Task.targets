@@ -1,7 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <UsingTask TaskName="BlazorWasmProfiler.ComponentMethodInjector" AssemblyFile="BlazorWasmProfiler.Task.dll" />
+    <UsingTask TaskName="BlazorWasmProfiler.ComponentMethodInspector" AssemblyFile="BlazorWasmProfiler.Task.dll" />
 
-    <Target Name="ComponentMethodInjection" AfterTargets="Build">
-        <BlazorWasmProfiler.ComponentMethodInjector AssemblyPath="$(TargetPath)" />
+    <Target Name="ComponentMethodInspection" AfterTargets="Build">
+      <BlazorWasmProfiler.ComponentMethodInspector AssemblyPath="$(TargetPath)" />
     </Target>
 </Project>

@@ -31,7 +31,7 @@ It also measures the render time of every Blazor Component that defines these me
         [assembly: MethodTimer]
         [assembly: RenderTimer]
 
-3. Access statistics:
+3. Access statistics
 
         var methodStatistics = BlazorTimerAttribute.GetMethodStatistics();
         var renderStatistics = BlazorTimerAttribute.GetRenderStatistics();

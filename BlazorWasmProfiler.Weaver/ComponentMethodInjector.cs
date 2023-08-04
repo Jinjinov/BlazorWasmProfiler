@@ -1,35 +1,32 @@
-﻿using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Linq;
 
 namespace BlazorWasmProfiler
 {
-    public class ComponentMethodInjector : Task
+    public class ComponentMethodInjector
     {
-        [Required]
         public string AssemblyPath { get; set; } = string.Empty;
 
-        public override bool Execute()
+        public bool Execute()
         {
             try
             {
-                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 1 {System.Runtime.InteropServices.RuntimeInformation.OSArchitecture}");
-                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 1 {System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture}");
+                //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 1 {System.Runtime.InteropServices.RuntimeInformation.OSArchitecture}");
+                //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 1 {System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture}");
 
                 AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(AssemblyPath);
 
-                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 2 {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
-                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 2 {System.Runtime.InteropServices.RuntimeInformation.OSDescription}");
+                //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 2 {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
+                //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 2 {System.Runtime.InteropServices.RuntimeInformation.OSDescription}");
 
                 // Load ExecutionStatistics type and methods
                 TypeReference executionStatisticsType = assembly.MainModule.ImportReference(typeof(ExecutionStatistics));
                 MethodReference renderTimerStartMethod = assembly.MainModule.ImportReference(executionStatisticsType.Resolve().Methods.First(m => m.Name == "RenderTimerStart"));
                 MethodReference renderTimerStopMethod = assembly.MainModule.ImportReference(executionStatisticsType.Resolve().Methods.First(m => m.Name == "RenderTimerStop"));
 
-                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 3");
+                //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 3");
 
                 foreach (ModuleDefinition module in assembly.Modules)
                 {
@@ -65,61 +62,16 @@ namespace BlazorWasmProfiler
                     }
                 }
 
-                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 4");
+                //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 4");
 
                 // Save the modified assembly back to the original file
                 assembly.Write(AssemblyPath);
 
-                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 5");
+                //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 5");
             }
             catch (Exception ex)
             {
-                Log.LogError("Error while inspecting the project: " + ex.Message);
-                return false;
-            }
-
-            return true;
-        }
-
-        public bool CountClasses()
-        {
-            try
-            {
-                AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(AssemblyPath);
-
-                int derivedFromClassBaseCount = 0;
-                int onParametersSetCount = 0;
-
-                foreach (ModuleDefinition module in assembly.Modules)
-                {
-                    foreach (TypeDefinition type in module.Types)
-                    {
-                        if (type.BaseType?.FullName == "Microsoft.AspNetCore.Components.ComponentBase")
-                        {
-                            derivedFromClassBaseCount++;
-
-                            foreach (MethodDefinition method in type.Methods)
-                            {
-                                if (method.Name == "OnParametersSet" &&
-                                    method.IsFamily && method.IsVirtual &&
-                                    method.ReturnType.FullName == "System.Void" &&
-                                    method.Parameters.Count == 0)
-                                {
-                                    // Method "protected override void OnParametersSet()" found
-                                    onParametersSetCount++;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Log.LogMessage(MessageImportance.High, $"Number of classes derived from Microsoft.AspNetCore.Components.ComponentBase: {derivedFromClassBaseCount}");
-                Log.LogMessage(MessageImportance.High, $"Number of classes with \"protected override void OnParametersSet()\": {onParametersSetCount}");
-            }
-            catch (Exception ex)
-            {
-                Log.LogError("Error while inspecting the project: " + ex.Message);
-
+                //Log.LogError("Error while inspecting the project: " + ex.Message);
                 return false;
             }
 

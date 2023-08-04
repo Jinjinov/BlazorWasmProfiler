@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWasmProfiler.Core", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWasmProfiler.Task", "BlazorWasmProfiler.Task\BlazorWasmProfiler.Task.csproj", "{B4DC98E0-14A7-4C4C-8EC8-EBE601AB6A42}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWasmProfiler.Weaver", "BlazorWasmProfiler.Weaver\BlazorWasmProfiler.Weaver.csproj", "{92EE6F57-C640-4890-BB13-C5D423D3E9CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{B4DC98E0-14A7-4C4C-8EC8-EBE601AB6A42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4DC98E0-14A7-4C4C-8EC8-EBE601AB6A42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4DC98E0-14A7-4C4C-8EC8-EBE601AB6A42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92EE6F57-C640-4890-BB13-C5D423D3E9CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92EE6F57-C640-4890-BB13-C5D423D3E9CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92EE6F57-C640-4890-BB13-C5D423D3E9CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92EE6F57-C640-4890-BB13-C5D423D3E9CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

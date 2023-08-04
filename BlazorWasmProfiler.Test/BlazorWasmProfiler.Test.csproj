@@ -17,9 +17,9 @@
     <ProjectReference Include="..\BlazorWasmProfiler\BlazorWasmProfiler.csproj" />
   </ItemGroup>
 
-  <!--<UsingTask TaskName="BlazorWasmProfiler.ComponentMethodInjector" AssemblyFile="$(TargetDir)BlazorWasmProfiler.Task.dll" />
-  <Target Name="ComponentMethodInjection" AfterTargets="Build">
-    <BlazorWasmProfiler.ComponentMethodInjector AssemblyPath="$(TargetPath)" />
+  <!--<UsingTask TaskName="BlazorWasmProfiler.ComponentMethodInspector" AssemblyFile="$(TargetDir)BlazorWasmProfiler.Task.dll" />
+  <Target Name="ComponentMethodInspection" AfterTargets="Build">
+    <BlazorWasmProfiler.ComponentMethodInspector AssemblyPath="$(TargetPath)" />
   </Target>-->
 
 </Project>

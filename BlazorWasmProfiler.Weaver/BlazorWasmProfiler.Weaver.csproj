@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Product>BlazorWasmProfiler</Product>
+    <PackageId>BlazorWasmProfiler</PackageId>
+    <PackageVersion>0.0.1.0</PackageVersion>
+    <Version>0.0.1.0</Version>
+    <Authors>Jinjinov</Authors>
+    <Description>Poor Man's Blazor Wasm Profiler</Description>
+    <Copyright>Copyright (c) Jinjinov 2023</Copyright>
+    <PackageProjectUrl>https://github.com/Jinjinov/BlazorWasmProfiler</PackageProjectUrl>
+    <!--<PackageIcon></PackageIcon>-->
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Jinjinov/BlazorWasmProfiler.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Blazor;Wasm;Profiler</PackageTags>
+    <!--<PackageReleaseNotes></PackageReleaseNotes>-->
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="BlazorWasmProfiler.targets">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspectInjector" Version="2.8.2" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorWasmProfiler.Core\BlazorWasmProfiler.Core.csproj" />
+  </ItemGroup>
+
+</Project>
