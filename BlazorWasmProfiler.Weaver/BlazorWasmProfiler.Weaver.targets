@@ -1,7 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <UsingTask TaskName="BlazorWasmProfiler.ComponentMethodInjector" AssemblyFile="BlazorWasmProfiler.Weaver.dll" />
-
     <Target Name="ComponentMethodInjection" AfterTargets="Build">
-        <BlazorWasmProfiler.ComponentMethodInjector AssemblyPath="$(TargetPath)" />
+        <Exec Command="$(MSBuildThisFileDirectory)BlazorWasmProfiler.Weaver.exe $(TargetPath)" />
     </Target>
 </Project>
