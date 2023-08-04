@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Product>BlazorWasmProfiler</Product>
-    <PackageId>BlazorWasmProfiler</PackageId>
+    <Product>BlazorWasmProfiler.Weaver</Product>
+    <PackageId>BlazorWasmProfiler.Weaver</PackageId>
     <PackageVersion>0.0.1.0</PackageVersion>
     <Version>0.0.1.0</Version>
     <Authors>Jinjinov</Authors>
