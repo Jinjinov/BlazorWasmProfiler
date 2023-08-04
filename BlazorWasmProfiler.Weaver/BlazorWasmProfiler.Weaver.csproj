@@ -25,7 +25,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="BlazorWasmProfiler.targets">
+    <None Update="BlazorWasmProfiler.Weaver.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </None>
@@ -39,7 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspectInjector" Version="2.8.2" />
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
   </ItemGroup>
 

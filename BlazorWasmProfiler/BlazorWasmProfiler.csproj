@@ -25,13 +25,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="BlazorWasmProfiler.targets">
-      <Pack>true</Pack>
-      <PackagePath>build</PackagePath>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -40,8 +33,6 @@
 
   <ItemGroup>
     <PackageReference Include="AspectInjector" Version="2.8.2" />
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.6.3" />
-    <PackageReference Include="Mono.Cecil" Version="0.11.5" />
   </ItemGroup>
 
   <ItemGroup>
