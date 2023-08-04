@@ -16,12 +16,20 @@ namespace BlazorWasmProfiler
         {
             try
             {
+                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 1 {System.Runtime.InteropServices.RuntimeInformation.OSArchitecture}");
+                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 1 {System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture}");
+
                 AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(AssemblyPath);
+
+                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 2 {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
+                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 2 {System.Runtime.InteropServices.RuntimeInformation.OSDescription}");
 
                 // Load ExecutionStatistics type and methods
                 TypeReference executionStatisticsType = assembly.MainModule.ImportReference(typeof(ExecutionStatistics));
                 MethodReference renderTimerStartMethod = assembly.MainModule.ImportReference(executionStatisticsType.Resolve().Methods.First(m => m.Name == "RenderTimerStart"));
                 MethodReference renderTimerStopMethod = assembly.MainModule.ImportReference(executionStatisticsType.Resolve().Methods.First(m => m.Name == "RenderTimerStop"));
+
+                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 3");
 
                 foreach (ModuleDefinition module in assembly.Modules)
                 {
@@ -57,8 +65,12 @@ namespace BlazorWasmProfiler
                     }
                 }
 
+                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 4");
+
                 // Save the modified assembly back to the original file
                 assembly.Write(AssemblyPath);
+
+                Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 5");
             }
             catch (Exception ex)
             {
