@@ -10,10 +10,14 @@ public class Program
 {
     static void Main(string[] args)
     {
+        Console.WriteLine($"ComponentMethodInjector 0 {args}");
+
         if (args.Length == 0)
             return;
 
         string assemblyPath = args.First();
+
+        Console.WriteLine($"ComponentMethodInjector 0 {assemblyPath}");
 
         if (!File.Exists(assemblyPath))
             return;
@@ -90,7 +94,7 @@ public class Program
                                     overrideMethod.IsHideBySig = true;
                                     overrideMethod.ImplAttributes = methodInBaseType.ImplAttributes;
                                     overrideMethod.SemanticsAttributes = methodInBaseType.SemanticsAttributes;
-                                    overrideMethod.Overrides.Add(new MethodReference(methodInBaseType.Name, methodInBaseType.ReturnType, type));
+                                    //overrideMethod.Overrides.Add(new MethodReference(methodInBaseType.Name, methodInBaseType.ReturnType, type));
 
                                     // Optional: Copy the parameters from the original VirtualMethod
                                     foreach (var parameter in methodInBaseType.Parameters)
