@@ -13,14 +13,28 @@ public class Program
         Console.WriteLine($"ComponentMethodInjector 0 {args}");
 
         if (args.Length == 0)
+        {
+            Console.WriteLine("╔════════════════════════╗");
+            Console.WriteLine("║                        ║");
+            Console.WriteLine("║   Arguments missing!   ║");
+            Console.WriteLine("║                        ║");
+            Console.WriteLine("╚════════════════════════╝");
             return;
+        }
 
         string assemblyPath = args.First();
 
         Console.WriteLine($"ComponentMethodInjector 0 {assemblyPath}");
 
         if (!File.Exists(assemblyPath))
+        {
+            Console.WriteLine("╔═════════════════════╗");
+            Console.WriteLine("║                     ║");
+            Console.WriteLine("║   File not found!   ║");
+            Console.WriteLine("║                     ║");
+            Console.WriteLine("╚═════════════════════╝");
             return;
+        }
 
         try
         {

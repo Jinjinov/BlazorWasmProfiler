@@ -22,7 +22,7 @@
     <BlazorWasmProfiler.ComponentMethodInspector AssemblyPath="$(TargetPath)" />
   </Target>-->
 
-  <Target Name="ComponentMethodInjection" AfterTargets="Build">
+  <Target Name="ComponentMethodInjection" AfterTargets="CoreCompile">
     <Exec Command="$(SolutionDir)BlazorWasmProfiler.Weaver\bin\$(Configuration)\$(TargetFramework)\BlazorWasmProfiler.Weaver.exe $(TargetPath)" />
   </Target>
 
