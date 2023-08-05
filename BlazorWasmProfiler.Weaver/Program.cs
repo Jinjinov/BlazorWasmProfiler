@@ -98,28 +98,54 @@ public class Program
                                     type.Methods.Add(overrideMethod);
 
                                     methodToModify = overrideMethod;
-                                }
 
-                                ILProcessor ilProcessor = methodToModify.Body.GetILProcessor();
+                                    Console.WriteLine("Override method added to targetType.");
+                                }
 
                                 Console.WriteLine($"ComponentMethodInjector 8");
 
-                                if (methodToModify.Name == "OnAfterRender")
+                                if (methodToModify.Body.Instructions.Count == 0)
                                 {
-                                    Console.WriteLine($"ComponentMethodInjector 9 Instructions {methodToModify.Body.Instructions.Count}");
+                                    // Adding calls to ExecutionStatistics.RenderTimerStart and ExecutionStatistics.RenderTimerStop
+                                    if (methodToModify.Name == "OnParametersSet")
+                                    {
+                                        Console.WriteLine($"ComponentMethodInjector 9");
 
-                                    Instruction firstInstruction = methodToModify.Body.Instructions[0];
-                                    ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Ldstr, type.FullName));
-                                    ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Call, renderTimerStopMethod));
+                                        methodToModify.Body.Instructions.Add(Instruction.Create(OpCodes.Ldstr, type.FullName)); // Load declaringTypeName
+                                        methodToModify.Body.Instructions.Add(Instruction.Create(OpCodes.Call, renderTimerStartMethod)); // Call RenderTimerStart
+                                    }
+
+                                    if (methodToModify.Name == "OnAfterRender")
+                                    {
+                                        Console.WriteLine($"ComponentMethodInjector 0");
+
+                                        methodToModify.Body.Instructions.Add(Instruction.Create(OpCodes.Ldstr, type.FullName)); // Load declaringTypeName
+                                        methodToModify.Body.Instructions.Add(Instruction.Create(OpCodes.Call, renderTimerStopMethod)); // Call RenderTimerStop
+                                    }
+
+                                    methodToModify.Body.Instructions.Add(Instruction.Create(OpCodes.Ret)); // Return from the method
                                 }
-
-                                if (methodToModify.Name == "OnParametersSet")
+                                else
                                 {
-                                    Console.WriteLine($"ComponentMethodInjector 0 Instructions {methodToModify.Body.Instructions.Count}");
+                                    ILProcessor ilProcessor = methodToModify.Body.GetILProcessor();
 
-                                    Instruction lastInstruction = methodToModify.Body.Instructions[^1];
-                                    ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Ldstr, type.FullName));
-                                    ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Call, renderTimerStartMethod));
+                                    if (methodToModify.Name == "OnAfterRender")
+                                    {
+                                        Console.WriteLine($"ComponentMethodInjector 9 Instructions {methodToModify.Body.Instructions.Count}");
+
+                                        Instruction firstInstruction = methodToModify.Body.Instructions[0];
+                                        ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Ldstr, type.FullName));
+                                        ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Call, renderTimerStopMethod));
+                                    }
+
+                                    if (methodToModify.Name == "OnParametersSet")
+                                    {
+                                        Console.WriteLine($"ComponentMethodInjector 0 Instructions {methodToModify.Body.Instructions.Count}");
+
+                                        Instruction lastInstruction = methodToModify.Body.Instructions[^1];
+                                        ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Ldstr, type.FullName));
+                                        ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Call, renderTimerStartMethod));
+                                    }
                                 }
                             }
                         }
