@@ -23,7 +23,15 @@ public class Program
             Console.WriteLine($"ComponentMethodInjector 1 {System.Runtime.InteropServices.RuntimeInformation.OSArchitecture}");
             Console.WriteLine($"ComponentMethodInjector 1 {System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture}");
 
-            AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(assemblyPath);
+            string tempPath = assemblyPath + ".temp";
+
+            // Make a copy of the original assembly
+            File.Copy(assemblyPath, tempPath, true);
+
+            // Load the copied assembly
+            AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(tempPath);
+
+            //AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(assemblyPath);
 
             Console.WriteLine($"ComponentMethodInjector 2 {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
             Console.WriteLine($"ComponentMethodInjector 2 {System.Runtime.InteropServices.RuntimeInformation.OSDescription}");
@@ -45,35 +53,63 @@ public class Program
 
                     if (type.BaseType?.FullName == "Microsoft.AspNetCore.Components.ComponentBase")
                     {
-                        Console.WriteLine($"ComponentMethodInjector 6");
+                        Console.WriteLine($"ComponentMethodInjector 6 {type.FullName}");
 
                         foreach (MethodDefinition method in type.Methods)
                         {
-                            Console.WriteLine($"ComponentMethodInjector 7");
+                            Console.WriteLine($"ComponentMethodInjector 7 {method.Name} {method.IsFamily} {method.IsVirtual} {method.ReturnType}");
 
                             if ((method.Name == "OnParametersSet" || method.Name == "OnAfterRender") &&
                                 method.IsFamily &&
                                 method.IsVirtual &&
                                 method.ReturnType.FullName == "System.Void")
                             {
-                                ILProcessor ilProcessor = method.Body.GetILProcessor();
+                                Console.WriteLine($"ComponentMethodInjector 7.1");
+
+                                MethodDefinition methodToModify = method;
+
+                                bool isOverride = method.IsVirtual && method.IsReuseSlot && method.DeclaringType != type;
+
+                                if (!isOverride)
+                                {
+                                    Console.WriteLine($"ComponentMethodInjector 7.2");
+
+                                    // Step 4: Add an override of VirtualMethod
+                                    MethodDefinition overrideMethod = new MethodDefinition(method.Name, method.Attributes, method.ReturnType);
+                                    overrideMethod.IsVirtual = true;
+                                    overrideMethod.IsReuseSlot = true;
+                                    overrideMethod.Overrides.Add(new MethodReference(method.Name, method.ReturnType, type));
+
+                                    // Optional: Copy the parameters from the original VirtualMethod
+                                    foreach (var parameter in method.Parameters)
+                                    {
+                                        overrideMethod.Parameters.Add(new ParameterDefinition(parameter.Name, parameter.Attributes, parameter.ParameterType));
+                                    }
+
+                                    // Step 5: Add the new method to MyType
+                                    type.Methods.Add(overrideMethod);
+
+                                    methodToModify = overrideMethod;
+                                }
+
+                                ILProcessor ilProcessor = methodToModify.Body.GetILProcessor();
 
                                 Console.WriteLine($"ComponentMethodInjector 8");
 
-                                if (method.Name == "OnAfterRender")
+                                if (methodToModify.Name == "OnAfterRender")
                                 {
                                     Console.WriteLine($"ComponentMethodInjector 9");
 
-                                    Instruction firstInstruction = method.Body.Instructions[0];
+                                    Instruction firstInstruction = methodToModify.Body.Instructions[0];
                                     ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Ldstr, type.FullName));
                                     ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Call, renderTimerStopMethod));
                                 }
 
-                                if (method.Name == "OnParametersSet")
+                                if (methodToModify.Name == "OnParametersSet")
                                 {
                                     Console.WriteLine($"ComponentMethodInjector 0");
 
-                                    Instruction lastInstruction = method.Body.Instructions[method.Body.Instructions.Count - 1];
+                                    Instruction lastInstruction = methodToModify.Body.Instructions[^1];
                                     ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Ldstr, type.FullName));
                                     ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Call, renderTimerStartMethod));
                                 }
@@ -86,7 +122,42 @@ public class Program
             Console.WriteLine($"ComponentMethodInjector 11");
 
             // Save the modified assembly back to the original file
-            assembly.Write(assemblyPath);
+            //assembly.Write(assemblyPath);
+
+            int maxRetries = 100;
+            int retryDelayMs = 200; // Adjust this value if needed
+
+            // Try writing the modified assembly back, retry if the file is locked
+            bool success = false;
+            for (int i = 0; i < maxRetries; i++)
+            {
+                try
+                {
+                    assembly.Write(assemblyPath);
+                    success = true;
+                    break;
+                }
+                catch (IOException ex)
+                {
+                    // If the file is locked, wait for a while and try again
+                    Console.WriteLine($"Attempt {i + 1} failed: {ex.Message}");
+                    System.Threading.Thread.Sleep(retryDelayMs);
+                }
+            }
+
+            if (success)
+            {
+                Console.WriteLine("Assembly modification succeeded!");
+            }
+            else
+            {
+                Console.WriteLine("Assembly modification failed after multiple retries.");
+            }
+
+            assembly.Dispose();
+
+            // Clean up the temporary file
+            File.Delete(tempPath);
 
             Console.WriteLine($"ComponentMethodInjector 12");
         }
