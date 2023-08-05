@@ -25,6 +25,7 @@
   <Target Name="ComponentMethodInjection" AfterTargets="Build">
     <Exec Command="$(SolutionDir)BlazorWasmProfiler.Weaver\bin\$(Configuration)\$(TargetFramework)\BlazorWasmProfiler.Weaver.exe $(TargetPath)" />
     <Exec Command="$(SolutionDir)BlazorWasmProfiler.Weaver\bin\$(Configuration)\$(TargetFramework)\BlazorWasmProfiler.Weaver.exe $(TargetDir)wwwroot\_framework\$(TargetFileName)" />
+    <!--<Exec Command="$(SolutionDir)BlazorWasmProfiler.Weaver\bin\$(Configuration)\$(TargetFramework)\BlazorWasmProfiler.Weaver.exe $(TargetDir)wwwroot\_framework\$(TargetFileName).gz" />-->
   </Target>
 
   <!--<Target Name="ComponentMethodInjection" AfterTargets="CoreCompile">
