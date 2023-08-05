@@ -45,43 +45,51 @@ public class Program
 
             foreach (ModuleDefinition module in assembly.Modules)
             {
-                Console.WriteLine($"ComponentMethodInjector 4");
+                Console.WriteLine($"ComponentMethodInjector 4 {module.Name}");
 
                 foreach (TypeDefinition type in module.Types)
                 {
-                    Console.WriteLine($"ComponentMethodInjector 5");
+                    Console.WriteLine($"ComponentMethodInjector 5 {type.FullName}");
 
                     if (type.BaseType?.FullName == "Microsoft.AspNetCore.Components.ComponentBase")
                     {
                         Console.WriteLine($"ComponentMethodInjector 6 {type.FullName}");
 
-                        foreach (MethodDefinition method in type.Methods)
-                        {
-                            Console.WriteLine($"ComponentMethodInjector 7 {method.Name} {method.IsFamily} {method.IsVirtual} {method.ReturnType}");
+                        // Find the method in the target type's base type (if available)
+                        TypeDefinition baseType = type.BaseType.Resolve();
 
-                            if ((method.Name == "OnParametersSet" || method.Name == "OnAfterRender") &&
-                                method.IsFamily &&
-                                method.IsVirtual &&
-                                method.ReturnType.FullName == "System.Void")
+                        foreach (MethodDefinition methodInBaseType in baseType.Methods)
+                        {
+                            Console.WriteLine($"ComponentMethodInjector 7 {methodInBaseType.Name} {methodInBaseType.IsFamily} {methodInBaseType.IsVirtual} {methodInBaseType.ReturnType}");
+
+                            if ((methodInBaseType.Name == "OnParametersSet" || methodInBaseType.Name == "OnAfterRender") &&
+                                methodInBaseType.IsFamily &&
+                                methodInBaseType.IsVirtual &&
+                                methodInBaseType.ReturnType.FullName == "System.Void")
                             {
                                 Console.WriteLine($"ComponentMethodInjector 7.1");
 
-                                MethodDefinition methodToModify = method;
+                                // Check if the method is already overridden in the targetType
+                                MethodDefinition? overrideMethodExisting = type.Methods.FirstOrDefault(m => m.Name == methodInBaseType.Name && m.IsReuseSlot);
 
-                                bool isOverride = method.IsVirtual && method.IsReuseSlot && method.DeclaringType != type;
+                                MethodDefinition methodToModify;
 
-                                if (!isOverride)
+                                if (overrideMethodExisting != null)
+                                {
+                                    methodToModify = overrideMethodExisting;
+                                }
+                                else
                                 {
                                     Console.WriteLine($"ComponentMethodInjector 7.2");
 
                                     // Step 4: Add an override of VirtualMethod
-                                    MethodDefinition overrideMethod = new MethodDefinition(method.Name, method.Attributes, method.ReturnType);
+                                    MethodDefinition overrideMethod = new MethodDefinition(methodInBaseType.Name, methodInBaseType.Attributes, methodInBaseType.ReturnType);
                                     overrideMethod.IsVirtual = true;
                                     overrideMethod.IsReuseSlot = true;
-                                    overrideMethod.Overrides.Add(new MethodReference(method.Name, method.ReturnType, type));
+                                    overrideMethod.Overrides.Add(new MethodReference(methodInBaseType.Name, methodInBaseType.ReturnType, type));
 
                                     // Optional: Copy the parameters from the original VirtualMethod
-                                    foreach (var parameter in method.Parameters)
+                                    foreach (var parameter in methodInBaseType.Parameters)
                                     {
                                         overrideMethod.Parameters.Add(new ParameterDefinition(parameter.Name, parameter.Attributes, parameter.ParameterType));
                                     }
@@ -98,7 +106,7 @@ public class Program
 
                                 if (methodToModify.Name == "OnAfterRender")
                                 {
-                                    Console.WriteLine($"ComponentMethodInjector 9");
+                                    Console.WriteLine($"ComponentMethodInjector 9 Instructions {methodToModify.Body.Instructions.Count}");
 
                                     Instruction firstInstruction = methodToModify.Body.Instructions[0];
                                     ilProcessor.InsertBefore(firstInstruction, ilProcessor.Create(OpCodes.Ldstr, type.FullName));
@@ -107,7 +115,7 @@ public class Program
 
                                 if (methodToModify.Name == "OnParametersSet")
                                 {
-                                    Console.WriteLine($"ComponentMethodInjector 0");
+                                    Console.WriteLine($"ComponentMethodInjector 0 Instructions {methodToModify.Body.Instructions.Count}");
 
                                     Instruction lastInstruction = methodToModify.Body.Instructions[^1];
                                     ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Ldstr, type.FullName));
