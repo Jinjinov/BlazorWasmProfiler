@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -22,8 +22,13 @@
     <BlazorWasmProfiler.ComponentMethodInspector AssemblyPath="$(TargetPath)" />
   </Target>-->
 
-  <Target Name="ComponentMethodInjection" AfterTargets="CoreCompile">
+  <Target Name="ComponentMethodInjection" AfterTargets="Build">
     <Exec Command="$(SolutionDir)BlazorWasmProfiler.Weaver\bin\$(Configuration)\$(TargetFramework)\BlazorWasmProfiler.Weaver.exe $(TargetPath)" />
+    <Exec Command="$(SolutionDir)BlazorWasmProfiler.Weaver\bin\$(Configuration)\$(TargetFramework)\BlazorWasmProfiler.Weaver.exe $(TargetDir)wwwroot\_framework\$(TargetFileName)" />
   </Target>
+
+  <!--<Target Name="ComponentMethodInjection" AfterTargets="CoreCompile">
+    <Exec Command="$(SolutionDir)BlazorWasmProfiler.Weaver\bin\$(Configuration)\$(TargetFramework)\BlazorWasmProfiler.Weaver.exe %(IntermediateAssembly.FullPath)" />
+  </Target>-->
 
 </Project>
