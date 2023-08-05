@@ -85,7 +85,11 @@ public class Program
                                     // Step 4: Add an override of VirtualMethod
                                     MethodDefinition overrideMethod = new MethodDefinition(methodInBaseType.Name, methodInBaseType.Attributes, methodInBaseType.ReturnType);
                                     overrideMethod.IsVirtual = true;
+                                    overrideMethod.IsNewSlot = false;
                                     overrideMethod.IsReuseSlot = true;
+                                    overrideMethod.IsHideBySig = true;
+                                    overrideMethod.ImplAttributes = methodInBaseType.ImplAttributes;
+                                    overrideMethod.SemanticsAttributes = methodInBaseType.SemanticsAttributes;
                                     overrideMethod.Overrides.Add(new MethodReference(methodInBaseType.Name, methodInBaseType.ReturnType, type));
 
                                     // Optional: Copy the parameters from the original VirtualMethod
