@@ -29,6 +29,9 @@
 
   <!--<Target Name="ComponentMethodInjection" AfterTargets="CoreCompile">
     <Exec Command="$(SolutionDir)BlazorWasmProfiler.Weaver\bin\$(Configuration)\$(TargetFramework)\BlazorWasmProfiler.Weaver.exe %(IntermediateAssembly.FullPath)" />
+    <Exec Command="$(SolutionDir)BlazorWasmProfiler.Weaver\bin\$(Configuration)\$(TargetFramework)\BlazorWasmProfiler.Weaver.exe %(IntermediateAssembly.FullPath)._asi_refs" />
+    <Exec Command="$(SolutionDir)BlazorWasmProfiler.Weaver\bin\$(Configuration)\$(TargetFramework)\BlazorWasmProfiler.Weaver.exe %(IntermediateAssembly.FullPath)\ref" />
+    <Exec Command="$(SolutionDir)BlazorWasmProfiler.Weaver\bin\$(Configuration)\$(TargetFramework)\BlazorWasmProfiler.Weaver.exe %(IntermediateAssembly.FullPath)\refint" />
   </Target>-->
 
 </Project>
