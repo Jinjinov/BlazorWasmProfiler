@@ -20,20 +20,20 @@ public class Program
 
         try
         {
-            //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 1 {System.Runtime.InteropServices.RuntimeInformation.OSArchitecture}");
-            //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 1 {System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture}");
+            Console.WriteLine($"ComponentMethodInjector 1 {System.Runtime.InteropServices.RuntimeInformation.OSArchitecture}");
+            Console.WriteLine($"ComponentMethodInjector 1 {System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture}");
 
             AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(assemblyPath);
 
-            //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 2 {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
-            //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 2 {System.Runtime.InteropServices.RuntimeInformation.OSDescription}");
+            Console.WriteLine($"ComponentMethodInjector 2 {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
+            Console.WriteLine($"ComponentMethodInjector 2 {System.Runtime.InteropServices.RuntimeInformation.OSDescription}");
 
             // Load ExecutionStatistics type and methods
             TypeReference executionStatisticsType = assembly.MainModule.ImportReference(typeof(ExecutionStatistics));
             MethodReference renderTimerStartMethod = assembly.MainModule.ImportReference(executionStatisticsType.Resolve().Methods.First(m => m.Name == "RenderTimerStart"));
             MethodReference renderTimerStopMethod = assembly.MainModule.ImportReference(executionStatisticsType.Resolve().Methods.First(m => m.Name == "RenderTimerStop"));
 
-            //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 3");
+            Console.WriteLine($"ComponentMethodInjector 3");
 
             foreach (ModuleDefinition module in assembly.Modules)
             {
@@ -69,16 +69,16 @@ public class Program
                 }
             }
 
-            //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 4");
+            Console.WriteLine($"ComponentMethodInjector 4");
 
             // Save the modified assembly back to the original file
             assembly.Write(assemblyPath);
 
-            //Log.LogMessage(MessageImportance.High, $"ComponentMethodInjector 5");
+            Console.WriteLine($"ComponentMethodInjector 5");
         }
         catch (Exception ex)
         {
-            //Log.LogError("Error while inspecting the project: " + ex.Message);
+            Console.WriteLine("Error while inspecting the project: " + ex.Message);
         }
     }
 }
